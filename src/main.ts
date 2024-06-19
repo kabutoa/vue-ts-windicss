@@ -1,4 +1,5 @@
 import 'virtual:windi.css'
+import './assets/css/index.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
