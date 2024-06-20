@@ -15,7 +15,7 @@ import { request } from '@/api/request'
 
 const onSendRequest = async () => {
   const info = await request({
-    url: '/api/info',
+    url: '/info',
     data: {
       id: 1
     }
