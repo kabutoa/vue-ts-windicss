@@ -13,14 +13,19 @@
 <script setup lang="ts">
 import { request } from '@/api/request'
 
+export interface IUserInfo {
+  name: string
+  email: string
+}
+
 const onSendRequest = async () => {
-  const info = await request({
+  const info = await request<IUserInfo>({
     url: '/info',
     data: {
       id: 1
     }
   })
-  console.log(info)
+  console.log(info.data.name)
 }
 </script>
 <style scoped></style>

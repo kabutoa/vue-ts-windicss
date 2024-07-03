@@ -10,7 +10,13 @@ import { useTokenStore, useLoadingStore, useToastStore } from '@/stores'
 import type { IRes } from './types'
 
 const service: AxiosInstance = axios.create({
-  baseURL: '/',
+  /**
+   * import.meta.env.MODE === 'production'
+      ? import.meta.env.VITE_API_URL
+      : 'http://localhost:3000/api',
+   * 
+   */
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000
 })
 

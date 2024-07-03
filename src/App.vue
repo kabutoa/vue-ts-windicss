@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
 import HeaderNav from './components/header/index.vue'
-import viteLogo from '@/assets/images/vite.svg'
 </script>
 
 <template>
   <header-nav>
-    <img :src="viteLogo" className="ml-auto" alt="Vite logo" />
+    <img src="./assets//images/vite.svg" className="ml-auto" alt="Vite logo" />
   </header-nav>
   <router-view v-slot="{ Component }">
     <transition name="fade" mode="out-in">
