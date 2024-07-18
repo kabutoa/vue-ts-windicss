@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig, loadEnv, mergeConfig } from 'vite'
+import { defineConfig, loadEnv, mergeConfig, preview } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import legacy from '@vitejs/plugin-legacy'
@@ -21,12 +21,18 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
+    },
+    preview: {
+      port: 8888,
+      host: '0.0.0.0'
     }
   }
   if (!isProd) {
     return mergeConfig(baseConfig, {
       base: env.VITE_BASE_URL,
       server: {
+        port: 8080,
+        host: '0.0.0.0',
         proxy: {
           [`${env.VITE_API_URL}`]: {
             target: env.VITE_MOCK_PATH,
