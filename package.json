@@ -19,6 +19,7 @@
     "format:check": "prettier --check \"**/*.{vue,ts,tsx,js,jsx,mjs,mts,cjs,cts,mdx,md,css,json,html,yaml,yml}\""
   },
   "dependencies": {
+    "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",

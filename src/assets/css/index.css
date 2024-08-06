@@ -1,3 +1,18 @@
+:root {
+  --bg-color: pink;
+}
+
+html,
+body,
+#app {
+  width: 100vw;
+}
+
+#app {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
 // animation
 .fade-enter-active,
 .fade-leave-active {
