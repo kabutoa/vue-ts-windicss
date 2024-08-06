@@ -11,20 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import { request } from '@/api/request'
-
-export interface IUserInfo {
-  name: string
-  email: string
-}
+import API from '@/api/modules/index'
 
 const onSendRequest = async () => {
-  const info = await request<IUserInfo>({
-    url: '/info',
-    data: {
-      id: 1
-    }
-  })
+  const info = await API.login({ username: 'test', password: 'test' })
   console.log(info.data.name)
 }
 </script>

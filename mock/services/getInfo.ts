@@ -1,6 +1,6 @@
 export default {
-  url: '/info',
-  type: 'get',
+  url: '/userinfo',
+  type: 'post',
   response: () => {
     return {
       status: 'success',
