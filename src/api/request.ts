@@ -14,19 +14,22 @@ const service: AxiosInstance = axios.create({
    * import.meta.env.MODE === 'production'
       ? import.meta.env.VITE_API_URL
       : 'http://localhost:3000/api',
-   * 
+   *
    */
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 10000
+  timeout: 10000,
+  // 跨域是否携带用户凭证
+  withCredentials: true
 })
 
 // 移除重复请求
-const requestUrls: string[] = []
-let requestFlag = ''
-const removeRequestUrl = () => {
-  const index = requestUrls.indexOf(requestFlag)
+let currentRequestKey = ''
+const requestKeys: string[] = []
+const checkRequestKey = (requestKey: string) => requestKeys.includes(requestKey)
+const removeRequesKey = (requestKey: string) => {
+  const index = requestKeys.indexOf(requestKey)
   if (index > -1) {
-    requestUrls.splice(index, 1)
+    requestKeys.splice(index, 1)
   }
 }
 
@@ -38,13 +41,14 @@ const { setToast } = useToastStore()
 service.interceptors.request.use(
   (req: InternalAxiosRequestConfig & { mask?: boolean }) => {
     setLoading(true, req.mask)
-    requestFlag = `${req.url}${req.method}`
-    if (requestUrls.includes(requestFlag)) {
+    currentRequestKey = `${req.url}&${req.method}`
+    // 若请求重复
+    if (checkRequestKey(currentRequestKey)) {
       req.cancelToken = new axios.CancelToken((cancel) => {
         cancel('duplicate request')
       })
     } else {
-      requestUrls.push(requestFlag)
+      requestKeys.push(currentRequestKey)
       getToken && (req.headers['Authorization'] = `Bearer ${getToken}`)
     }
     return req
@@ -58,7 +62,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (res: AxiosResponse) => {
     setLoading(false, false)
-    removeRequestUrl()
+    removeRequesKey(currentRequestKey)
     const { status, msg } = res.data
     if (status === 'error') {
       setToast({
@@ -75,7 +79,7 @@ service.interceptors.response.use(
     }
     setLoading(false, false)
     setToast({ show: true, msg: error.message || 'NETWORK_ERROR' })
-    removeRequestUrl()
+    removeRequesKey(currentRequestKey)
     return Promise.reject(error)
   }
 )

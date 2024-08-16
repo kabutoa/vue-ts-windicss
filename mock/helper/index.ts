@@ -2,9 +2,8 @@ import { fileURLToPath } from 'url'
 import { readdir } from 'fs/promises'
 import path, { dirname } from 'path'
 import { IMockData } from '../types'
-import Mock from 'mockjs'
 
-export function getResponse (data) {
+export function getResponse(data) {
   const initialResponse = {
     status: 'success',
     msg: ''
@@ -36,12 +35,15 @@ export const getMocks = async () => {
 
 export const buildRouter = async (router) => {
   const mocks = (await getMocks()) as IMockData[]
-  mocks.forEach(({ type, url, response, apiPrefix = true }) => {
+  mocks.forEach(({ type, url, response, timeout, apiPrefix = true }) => {
     if (SUPPORT_METHODS.includes(type) && url) {
-      router[type](
-        apiPrefix ? `/api${url}` : url,
-        (ctx) => ctx.body = Mock.mock(typeof response === 'function' ? response() : response)
-      )
+      router[type](apiPrefix ? `/api${url}` : url, async (ctx, next) => {
+        ctx.body = typeof response === 'function' ? response() : response
+        await new Promise((resolve) =>
+          setTimeout(resolve, typeof timeout === 'number' ? timeout : 0)
+        )
+        next()
+      })
     }
   })
   return router

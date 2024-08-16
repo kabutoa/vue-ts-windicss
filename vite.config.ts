@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig, loadEnv, mergeConfig } from 'vite'
+import { defineConfig, loadEnv, mergeConfig, UserConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import legacy from '@vitejs/plugin-legacy'
@@ -26,7 +26,8 @@ export default defineConfig(({ mode }) => {
       port: 8888,
       host: '0.0.0.0'
     }
-  }
+  } as UserConfig
+
   if (!isProd) {
     return mergeConfig(baseConfig, {
       base: env.VITE_BASE_URL,
@@ -40,8 +41,9 @@ export default defineConfig(({ mode }) => {
           }
         }
       }
-    })
+    } as UserConfig)
   }
+
   return mergeConfig(baseConfig, {
     base: `${env.VITE_CDN_PATH}${name}`,
     plugins: [
@@ -72,5 +74,5 @@ export default defineConfig(({ mode }) => {
         }
       }
     }
-  })
+  } as UserConfig)
 })

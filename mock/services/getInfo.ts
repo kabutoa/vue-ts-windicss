@@ -1,6 +1,7 @@
 export default {
   url: '/userinfo',
   type: 'post',
+  timeout: 5000,
   response: () => {
     return {
       status: 'success',
