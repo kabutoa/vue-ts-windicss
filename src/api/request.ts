@@ -54,7 +54,6 @@ service.interceptors.request.use(
     return req
   },
   (error: AxiosError) => {
-    setLoading(false, false)
     return Promise.reject(error)
   }
 )
@@ -74,12 +73,17 @@ service.interceptors.response.use(
     return res.data
   },
   (error: AxiosError) => {
-    if (error.message === 'duplicate request') {
-      return Promise.reject(error.message)
-    }
     setLoading(false, false)
-    setToast({ show: true, msg: error.message || 'NETWORK_ERROR' })
     removeRequesKey(currentRequestKey)
+    const { message } = error
+    if (message === 'duplicate request') {
+      setToast({ show: true, msg: 'duplicate request error' })
+    }
+
+    if (message.indexOf('timeout') !== -1) {
+      setToast({ show: true, msg: 'request timeout error' })
+    }
+
     return Promise.reject(error)
   }
 )
