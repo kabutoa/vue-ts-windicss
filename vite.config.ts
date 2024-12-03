@@ -5,10 +5,10 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import legacy from '@vitejs/plugin-legacy'
 import windicss from 'vite-plugin-windicss'
-import compression from 'vite-plugin-compression'
+import compression from 'vite-plugin-compression2'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-import { name } from './package.json'
+import { name } from './package.json' with { type: 'json' }
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -46,22 +46,15 @@ export default defineConfig(({ mode }) => {
 
   return mergeConfig(baseConfig, {
     base: `${env.VITE_CDN_PATH}${name}`,
-    plugins: [
-      legacy(),
-      compression({
-        ext: '.gz', // 生成的文件后缀
-        algorithm: 'gzip', // 使用 gzip 压缩算法
-        deleteOriginFile: false // 是否删除原始文件
-      }),
-      visualizer({ open: true })
-    ],
+    plugins: [legacy(), compression(), visualizer({ open: true })],
     build: {
-      sourcemap: true,
+      sourcemap: false,
+      cssCodeSplit: true,
       rollupOptions: {
         output: {
           // 手动分包
           manualChunks: {
-            vue: ['vue', 'pinia', 'vue-router']
+            'vue-vendor': ['vue', 'pinia', 'vue-router']
           },
           chunkFileNames: 'js/[name]-[hash].js',
           entryFileNames: 'js/[name]-[hash].js',
@@ -71,6 +64,14 @@ export default defineConfig(({ mode }) => {
             }
             return 'assets/[name]-[hash][extname]'
           }
+        }
+      },
+      // 构建优化
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true, // 生产环境去除 console
+          drop_debugger: true // 生产环境去除 debugger
         }
       }
     }
